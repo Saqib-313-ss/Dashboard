@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Study Command Center</title>
+<style>
+:root{
+  --bg:#061018;--panel:#08151e;--panel2:#0b1b25;--line:#183342;
+  --text:#edf5f7;--muted:#88a2b5;--green:#31e0a1;--green2:#16b980;
+  --blue:#42bfff;--purple:#b66cff;--yellow:#ffc44d;--danger:#ff6685;
+  --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 70% 0%,#0b2029 0,#061018 42%,#040b11 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input,select{font:inherit} button{cursor:pointer}
+.app{display:flex;min-height:100vh}.side{width:92px;border-right:1px solid #17303d;background:rgba(4,13,19,.82);padding:20px 12px;position:fixed;top:0;bottom:0;z-index:10;backdrop-filter:blur(16px)}
+.brand{height:54px;display:grid;place-items:center;margin-bottom:18px;color:var(--green)}
+.nav{display:flex;flex-direction:column;gap:10px}.nav button{width:68px;height:58px;border:0;border-radius:15px;background:transparent;color:#a8bfd0;display:grid;place-items:center;transition:.2s}
+.nav button:hover,.nav button.active{background:linear-gradient(135deg,#0d5548,#103b3c);color:var(--green);box-shadow:inset 0 0 0 1px #1b7868,0 0 24px rgba(49,224,161,.08)}
+.icon{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+main{margin-left:92px;width:calc(100% - 92px);padding:28px 34px 50px;max-width:1500px;margin-right:auto}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.title{display:flex;gap:16px;align-items:center}.titleIcon{width:64px;height:64px;border-radius:17px;background:linear-gradient(145deg,#0b5145,#092a2d);display:grid;place-items:center;color:var(--green);box-shadow:0 0 25px rgba(49,224,161,.08)}h1{font-size:30px;margin:0;letter-spacing:-.6px}.topActions{display:flex;gap:12px}.round{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:#0b1a25;color:#b8d1df;display:grid;place-items:center}.page{display:none}.page.active{display:block}
+.card{background:linear-gradient(145deg,rgba(9,24,33,.92),rgba(5,16,23,.94));border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px}
+.grid{display:grid;gap:18px}.homeGrid{grid-template-columns:repeat(2,minmax(0,1fr));}.wide{grid-column:1/-1}.mini{min-height:180px}.cardHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.cardHead h3{margin:0;font-size:18px}.muted{color:var(--muted)}.green{color:var(--green)}
+.btn{border:1px solid #234655;background:#0b1e29;color:#dcebf0;border-radius:11px;padding:10px 15px;transition:.2s}.btn:hover{border-color:#347184}.btn.primary{background:linear-gradient(135deg,#25d397,#12a878);color:#03120e;border-color:#35e3a8;font-weight:700}.btn.danger{border-color:#663244;color:#ff9ab0}.btn.small{padding:7px 10px;font-size:13px}
+.kpi{font-size:34px;font-weight:750;letter-spacing:-1px}.sub{font-size:13px;color:var(--muted);margin-top:4px}
+.timerCard{text-align:center;padding:32px}.hourglass{width:108px;height:108px;margin:0 auto 16px;animation:float 2.4s ease-in-out infinite}.hourglass.running{animation:spin 2.8s linear infinite}@keyframes float{50%{transform:translateY(-5px)}}@keyframes spin{to{transform:rotate(360deg)}}.timer{font-size:58px;letter-spacing:2px;font-variant-numeric:tabular-nums;margin:6px 0 25px}.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.statsGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.chart{height:220px;display:flex;align-items:end;gap:10px;padding:12px 5px 0}.barWrap{height:100%;flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:7px}.bar{width:70%;max-width:46px;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,#43e2ad,#167f65);min-height:3px}.barLabel{font-size:11px;color:var(--muted)}.linechart{height:220px;display:flex;align-items:stretch;gap:5px;border-bottom:1px solid #1a3542;padding:10px 0}.pointCol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}.point{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(49,224,161,.6)}.dateLabel{font-size:10px;color:var(--muted);margin-top:7px}
+.examList,.taskList{display:grid;gap:10px}.item{border:1px solid #183544;background:#091b26;border-radius:13px;padding:15px;display:flex;align-items:center;justify-content:space-between;gap:14px}.itemMain{min-width:0}.itemTitle{font-weight:650}.itemMeta{color:var(--muted);font-size:13px;margin-top:5px}.days{text-align:right}.days strong{display:block;color:var(--green);font-size:24px}.days span{font-size:11px;color:var(--muted)}.badge{font-size:11px;padding:5px 9px;border-radius:999px;border:1px solid #315064}.high{color:#ff8aa5;border-color:#663244;background:#25141d}.medium{color:#ffd369;border-color:#6a5524;background:#211d10}.low{color:#57e4a7;border-color:#245844;background:#0d211a}
+.calendar{padding:24px}.calHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.calTitle{font-size:22px;font-weight:700}.calNav{display:flex;gap:8px}.calGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.dow{text-align:center;color:#7895a8;font-size:13px;padding:7px}.day{min-height:72px;border:1px solid transparent;border-radius:12px;background:#081721;color:#d9e9ef;display:flex;align-items:center;justify-content:center;position:relative}.day:hover{border-color:#2a5362}.day.mutedDay{color:#476170;background:transparent}.day.today{background:linear-gradient(145deg,#20c892,#129e78);color:#02130e;font-weight:800;box-shadow:0 0 24px rgba(49,224,161,.18)}.day.selected{outline:1px solid #47e4b4;outline-offset:-2px}.schedule{margin-top:18px}.scheduleGrid{display:grid;grid-template-columns:1.7fr .8fr;gap:18px}.sectionBox{border:1px solid #173443;border-radius:14px;padding:16px}.sectionBox h3{margin:0 0 12px}.quick{display:grid;gap:10px}.quick .item{padding:13px}
+.formGrid{display:grid;gap:14px}.field label{display:block;color:#a9c0cd;font-size:13px;margin-bottom:7px}.field input,.field select{width:100%;background:#071722;border:1px solid #1d3d4d;border-radius:11px;color:#eef7fa;padding:12px 13px;outline:none}.field input:focus,.field select:focus{border-color:#35cda0}.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:18px;z-index:30;backdrop-filter:blur(7px)}.modal.show{display:flex}.modalBox{width:min(560px,100%);max-height:90vh;overflow:auto;background:#07131d;border:1px solid #244653;border-radius:20px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.55)}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modalHead h2{margin:0}.modalActions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.taskControls{display:flex;gap:7px;flex-wrap:wrap}.empty{padding:32px;text-align:center;color:var(--muted);border:1px dashed #214050;border-radius:13px}
+.settings{display:grid;gap:14px}.setting{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);padding:16px;border-radius:14px;background:#091923}
+@media(max-width:900px){.homeGrid,.statsGrid,.scheduleGrid{grid-template-columns:1fr}.wide{grid-column:auto}.side{width:72px}.nav button{width:48px}.app main{margin-left:72px;width:calc(100% - 72px);padding:20px 16px}.titleIcon{width:54px;height:54px}h1{font-size:25px}.day{min-height:54px;font-size:13px}}
+@media(max-width:600px){.top{align-items:flex-start}.topActions{display:none}.calendar{padding:14px}.day{min-height:46px;border-radius:9px}.dow{font-size:11px}.timer{font-size:44px}.item{align-items:flex-start}.days strong{font-size:20px}.side{width:64px}.app main{margin-left:64px;width:calc(100% - 64px)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M6 7v12M18 7v12M6 19h12"/></svg>
+  </div>
+  <nav class="nav" id="nav"></nav>
+</aside>
+<main>
+  <div id="pages"></div>
+</main>
+</div>
+
+<div class="modal" id="modal"><div class="modalBox" id="modalBox"></div></div>
+
+<script>
+const ICONS={
+home:`<svg class="icon" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg>`,
+timer:`<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V8M9 2h6M12 2v3"/></svg>`,
+stats:`<svg class="icon" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>`,
+calendar:`<svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 9h18"/></svg>`,
+tasks:`<svg class="icon" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h5M8 16h4"/></svg>`,
+exam:`<svg class="icon" viewBox="0 0 24 24"><path d="M7 3h8l3 3v15H7z"/><path d="M15 3v4h4M10 11h5M10 15h5"/></svg>`,
+settings:`<svg class="icon" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19 13 2-1-2-1-.5-2 1-2-2-1-1.5 1.4-2-.8-.5-2.1h-2l-.5 2.1-2 .8L7 6 5 7l1 2-.5 2-2 1 2 1 .5 2-1 2 2 1 1.5-1.4 2 .8.5 2.1h2l.5-2.1 2-.8L19 18l2-1-1-2 .5-2Z"/></svg>`
+};
+const NAV=[['home','Home','home'],['timer','Study Timer','timer'],['stats','Statistics','stats'],['calendar','Calendar','calendar'],['tasks','Tasks','tasks'],['exams','Upcoming Exams','exam'],['settings','Settings','settings']];
+const KEY='studyCommandCenter_v1';
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{exams:[],tasks:[],study:{total:0,startDate:null,days:{}},selectedDate:null};
+let timer={seconds:0,running:false,last:null,interval:null};
+
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function iso(d){return d.toISOString().slice(0,10)}
+function today(){return iso(new Date())}
+function fmtDate(s){if(!s)return '';return new Date(s+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}
+function daysLeft(s){return Math.ceil((new Date(s+'T00:00:00')-new Date(new Date().toDateString()))/86400000)}
+function pageHeader(title,icon){return `<div class="top"><div class="title"><div class="titleIcon">${ICONS[icon]}</div><h1>${title}</h1></div><div class="topActions"><button class="round" title="Theme">☾</button><button class="round" title="Settings" onclick="go('settings')">${ICONS.settings}</button></div></div>`}
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));renderPage(p)}
+function buildNav(){document.getElementById('nav').innerHTML=NAV.map(([id,label,ic])=>`<button data-page="${id}" title="${label}" onclick="go('${id}')">${ICONS[ic]}</button>`).join('')}
+function shell(){document.getElementById('pages').innerHTML=NAV.map(([id])=>`<section class="page" id="page-${id}"></section>`).join('')}
+function renderPage(p){
+ if(p==='home')renderHome();
+ if(p==='timer')renderTimer();
+ if(p==='stats')renderStats();
+ if(p==='calendar')renderCalendar();
+ if(p==='tasks')renderTasks();
+ if(p==='exams')renderExams();
+ if(p==='settings')renderSettings();
+}
+function renderHome(){
+ const ex=[...state.exams].filter(e=>e.date>=today()).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
+ const ts=state.tasks.filter(t=>t.status==='active' && t.date>=today()).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,4);
+ const day=state.study.days[today()]||0;
+ document.getElementById('page-home').innerHTML=pageHeader('Home','home')+`
+ <div class="grid homeGrid">
+  <div class="card mini" onclick="go('timer')" style="cursor:pointer"><div class="cardHead"><h3>Study Timer</h3>${ICONS.timer}</div><div class="kpi">${clock(timer.seconds)}</div><div class="sub">Today: ${clock(day)}</div></div>
+  <div class="card mini" onclick="go('exams')" style="cursor:pointer"><div class="cardHead"><h3>Upcoming Exams</h3>${ICONS.exam}</div>${ex.length?ex.map(e=>`<div class="item"><div class="itemMain"><div class="itemTitle">${esc(e.name)}</div><div class="itemMeta">${fmtDate(e.date)}</div></div><div class="days"><strong>${daysLeft(e.date)}</strong><span>DAYS LEFT</span></div></div>`).join(''):'<div class="empty">No upcoming exams</div>'}</div>
+  <div class="card mini" onclick="go('calendar')" style="cursor:pointer"><div class="cardHead"><h3>Calendar</h3>${ICONS.calendar}</div><div class="kpi">${new Date().getDate()}</div><div class="sub">${new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',year:'numeric'})}</div></div>
+  <div class="card mini" onclick="go('tasks')" style="cursor:pointer"><div class="cardHead"><h3>Tasks</h3>${ICONS.tasks}</div>${ts.length?ts.map(t=>`<div class="item"><div class="itemMain"><div class="itemTitle">${esc(t.title)}</div><div class="itemMeta">${t.time||'No time'} · ${t.priority}</div></div></div>`).join(''):'<div class="empty">No active tasks</div>'}</div>
+  <div class="card wide" onclick="go('stats')" style="cursor:pointer"><div class="cardHead"><h3>Study Statistics</h3>${ICONS.stats}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px"><div><div class="kpi">${clock(day)}</div><div class="sub">Today</div></div><div><div class="kpi">${clock(weekTotal())}</div><div class="sub">This week</div></div><div><div class="kpi">${clock(state.study.total)}</div><div class="sub">Total</div></div></div></div>
+ </div>`;
+}
+function clock(sec){sec=Math.max(0,Math.floor(sec));let h=String(Math.floor(sec/3600)).padStart(2,'0'),m=String(Math.floor(sec%3600/60)).padStart(2,'0'),s=String(sec%60).padStart(2,'0');return `${h}:${m}:${s}`}
+function weekDates(){let d=new Date();let day=d.getDay();let diff=day===0?-6:1-day;let monday=new Date(d);monday.setDate(d.getDate()+diff);return [...Array(7)].map((_,i)=>{let x=new Date(monday);x.setDate(monday.getDate()+i);return iso(x)})}
+function weekTotal(){return weekDates().reduce((a,d)=>a+(state.study.days[d]||0),0)}
+function renderTimer(){
+ const running=timer.running?'running':'';
+ document.getElementById('page-timer').innerHTML=pageHeader('Study Timer','timer')+`
+ <div class="card timerCard">
+  <div class="hourglass ${running}">${hourglassSVG()}</div>
+  <div class="timer">${clock(timer.seconds)}</div>
+  <div class="actions">
+   <button class="btn primary" onclick="startTimer()">Start</button>
+   <button class="btn" onclick="pauseTimer()">Pause</button>
+   <button class="btn" onclick="startTimer()">Continue</button>
+   <button class="btn" onclick="doneToday()">✓ Done for Today</button>
+  </div>
+ </div>
+ <div class="statsGrid" style="margin-top:18px">
+  <div class="card"><div class="cardHead"><h3>Weekly Study Time</h3>${ICONS.stats}</div>${barChart()}</div>
+  <div class="card"><div class="cardHead"><h3>Monthly Study Time</h3>${ICONS.calendar}</div>${monthChart()}</div>
+  <div class="card wide"><div class="cardHead"><h3>Total Study Time</h3>${ICONS.timer}</div><div class="kpi">${clock(state.study.total)}</div><div class="sub">Started from ${state.study.startDate?fmtDate(state.study.startDate):'Not started'}</div><button class="btn" style="margin-top:15px" onclick="resetStudy()">↻ Reset</button></div>
+ </div>`;
+}
+function hourglassSVG(){return `<svg viewBox="0 0 120 120" width="108" height="108"><circle cx="60" cy="60" r="51" fill="none" stroke="#17333c"/><path d="M37 22h46M37 98h46M42 24c0 20 14 25 18 36-4 11-18 16-18 36M78 24c0 20-14 25-18 36 4 11 18 16 18 36" fill="none" stroke="#36dca8" stroke-width="5" stroke-linecap="round"/><path d="M46 28h28l-14 27zM46 92h28L60 65z" fill="#dce8c9" opacity=".9"/></svg>`}
+function barChart(){let ds=weekDates();let vals=ds.map(d=>state.study.days[d]||0),max=Math.max(...vals,3600);return `<div class="chart">${ds.map((d,i)=>`<div class="barWrap"><div class="bar" style="height:${Math.max(3,vals[i]/max*175)}px"></div><div class="barLabel">${new Date(d+'T12:00:00').toLocaleDateString(undefined,{weekday:'short'})}</div><div class="barLabel">${Math.round(vals[i]/60)}m</div></div>`).join('')}</div>`}
+function monthChart(){let d=new Date(),y=d.getFullYear(),m=d.getMonth(),n=new Date(y,m+1,0).getDate(),vals=[...Array(n)].map((_,i)=>state.study.days[iso(new Date(y,m,i+1))]||0),max=Math.max(...vals,3600);return `<div class="chart" style="gap:3px">${vals.map((v,i)=>`<div class="barWrap"><div class="bar" style="width:70%;height:${Math.max(2,v/max*175)}px"></div><div class="barLabel">${i+1}</div></div>`).join('')}</div>`}
+function startTimer(){if(timer.running)return;timer.running=true;timer.last=Date.now();clearInterval(timer.interval);timer.interval=setInterval(()=>{let now=Date.now(),delta=Math.floor((now-timer.last)/1000);if(delta){timer.seconds+=delta;timer.last+=delta*1000;renderTimer()}},1000);renderTimer()}
+function pauseTimer(){timer.running=false;clearInterval(timer.interval);renderTimer()}
+function doneToday(){pauseTimer();if(timer.seconds>0){state.study.days[today()]=(state.study.days[today()]||0)+timer.seconds;state.study.total+=timer.seconds;if(!state.study.startDate)state.study.startDate=today();timer.seconds=0;save()}renderTimer()}
+function resetStudy(){if(confirm('Reset total study time and start a new period today?')){state.study={total:0,startDate:today(),days:{}};save();renderTimer()}}
+function renderExams(){
+ const arr=[...state.exams].filter(e=>e.date>=today()).sort((a,b)=>a.date.localeCompare(b.date));
+ document.getElementById('page-exams').innerHTML=pageHeader('Upcoming Exams','exam')+`
+ <div class="card"><div class="cardHead"><h3>Upcoming Exams</h3><button class="btn primary" onclick="examModal()">+ Add Exam</button></div>
+ ${arr.length?`<div class="examList">${arr.map(e=>`<div class="item"><div class="itemMain"><div class="itemTitle">${esc(e.name)}</div><div class="itemMeta">${fmtDate(e.date)}</div></div><div class="days"><strong>${daysLeft(e.date)}</strong><span>DAYS REMAINING</span></div><button class="btn small danger" onclick="deleteExam('${e.id}')">Delete</button></div>`).join('')}</div>`:'<div class="empty">No upcoming exams</div>'}</div>`;
+}
+function examModal(){openModal(`<div class="modalHead"><h2>Add Exam</h2><button class="round" onclick="closeModal()">×</button></div><div class="formGrid"><div class="field"><label>Exam name</label><input id="exName" placeholder="Mathematics"></div><div class="field"><label>Exam date</label><input id="exDate" type="date" value="${today()}"></div></div><div class="modalActions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addExam()">Save Exam</button></div>`)}
+function addExam(){let n=document.getElementById('exName').value.trim(),d=document.getElementById('exDate').value;if(!n||!d)return;state.exams.push({id:crypto.randomUUID(),name:n,date:d});save();closeModal();renderExams()}
+function deleteExam(id){state.exams=state.exams.filter(x=>x.id!==id);save();renderExams()}
+function renderTasks(){
+ let active=state.tasks.filter(t=>t.status==='active').sort((a,b)=>a.date.localeCompare(b.date));
+ let groups={Today:[],Tomorrow:[],Upcoming:[],Overdue:[]};let t=new Date(),tom=new Date(t);tom.setDate(t.getDate()+1);
+ active.forEach(x=>{if(x.date<today())groups.Overdue.push(x);else if(x.date===today())groups.Today.push(x);else if(x.date===iso(tom))groups.Tomorrow.push(x);else groups.Upcoming.push(x)});
+ document.getElementById('page-tasks').innerHTML=pageHeader('Tasks','tasks')+`<div class="card"><div class="cardHead"><h3>Tasks</h3><button class="btn primary" onclick="taskModal()">+ Add Task</button></div>${Object.entries(groups).map(([g,a])=>a.length?`<div style="margin:18px 0"><div class="muted" style="margin-bottom:9px">${g}</div><div class="taskList">${a.map(taskCard).join('')}</div></div>`:'').join('')||'<div class="empty">No active tasks</div>'}</div>`;
+}
+function taskCard(t){return `<div class="item"><div class="itemMain"><div class="itemTitle">${esc(t.title)}</div><div class="itemMeta">${fmtDate(t.date)}${t.time?' · '+esc(t.time):''}</div></div><span class="badge ${t.priority.toLowerCase()}">${t.priority}</span><div class="taskControls"><button class="btn small" onclick="doneTask('${t.id}')">✓ Done</button><button class="btn small" onclick="dueTask('${t.id}')">Due</button></div></div>`}
+function taskModal(){openModal(`<div class="modalHead"><h2>Add Task</h2><button class="round" onclick="closeModal()">×</button></div><div class="field"><label>Adding task to which day?</label><input id="tDate" type="date" value="${today()}"></div><div class="formGrid" style="margin-top:14px"><div class="field"><label>Task title</label><input id="tTitle" placeholder="Finish Mathematics Chapter 4"></div><div class="field"><label>Time (optional)</label><input id="tTime" type="time"></div><div class="field"><label>Priority</label><select id="tPriority"><option>Low</option><option selected>Medium</option><option>High</option></select></div></div><div class="modalActions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addTask()">Add Task</button></div>`)}
+function addTask(){let title=document.getElementById('tTitle').value.trim(),date=document.getElementById('tDate').value;if(!title||!date)return;state.tasks.push({id:crypto.randomUUID(),title,date,time:document.getElementById('tTime').value,priority:document.getElementById('tPriority').value,status:'active'});save();closeModal();renderTasks()}
+function doneTask(id){state.tasks=state.tasks.filter(t=>t.id!==id);save();renderTasks()}
+function dueTask(id){let t=state.tasks.find(x=>x.id===id);if(!t)return;openModal(`<div class="modalHead"><h2>Reschedule Task</h2><button class="round" onclick="closeModal()">×</button></div><div class="item"><div><div class="itemTitle">${esc(t.title)}</div><div class="itemMeta">Original date: ${fmtDate(t.date)}</div></div></div><div class="field" style="margin-top:16px"><label>Move to which day?</label><input id="newDate" type="date" min="${today()}" value="${today()}"></div><div class="modalActions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="reschedule('${id}')">Reschedule</button></div>`)}
+function reschedule(id){let d=document.getElementById('newDate').value,t=state.tasks.find(x=>x.id===id);if(!t||!d)return;t.date=d;save();closeModal();renderTasks()}
+function renderCalendar(){
+ let sel=state.selectedDate||today();state.selectedDate=sel;
+ let d=new Date(sel+'T12:00:00'),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1),start=(first.getDay()+6)%7,n=new Date(y,m+1,0).getDate(),cells=[];
+ for(let i=0;i<start;i++){let x=new Date(y,m,1-start+i);cells.push(`<button class="day mutedDay" onclick="selectDate('${iso(x)}')">${x.getDate()}</button>`)}
+ for(let i=1;i<=n;i++){let s=iso(new Date(y,m,i));cells.push(`<button class="day ${s===today()?'today':''} ${s===sel?'selected':''}" onclick="selectDate('${s}')">${i}</button>`)}
+ while(cells.length<42){let i=cells.length-start-n+1;let x=new Date(y,m+1,i);cells.push(`<button class="day mutedDay" onclick="selectDate('${iso(x)}')">${x.getDate()}</button>`)}
+ let tasks=state.tasks.filter(t=>t.status==='active'&&t.date===sel), exams=state.exams.filter(e=>e.date===sel);
+ document.getElementById('page-calendar').innerHTML=pageHeader('Calendar','calendar')+`
+ <div class="card calendar"><div class="calHead"><div class="calTitle">${d.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</div><div class="calNav"><button class="btn small" onclick="calMove(-1)">‹</button><button class="btn small" onclick="state.selectedDate=today();renderCalendar()">Today</button><button class="btn small" onclick="calMove(1)">›</button></div></div>
+ <div class="calGrid">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="dow">${x}</div>`).join('')}${cells.join('')}</div></div>
+ <div class="card schedule"><div class="cardHead"><h3>${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</h3></div><div class="scheduleGrid">
+ <div class="sectionBox"><h3>Today's Schedule</h3>${tasks.length?tasks.map(taskCard).join(''):'<div class="empty">No tasks for this day</div>'}${exams.length?`<div style="margin-top:16px"><h3>Exams</h3>${exams.map(e=>`<div class="item"><div><div class="itemTitle">${esc(e.name)}</div><div class="itemMeta">${fmtDate(e.date)}</div></div><div class="days"><strong>${daysLeft(e.date)}</strong><span>DAYS LEFT</span></div></div>`).join('')}</div>`:'<div style="margin-top:16px"><h3>Exams</h3><div class="empty">No exams for this day</div></div>'}</div>
+ <div class="sectionBox"><h3>Quick Overview</h3><div class="quick"><div class="item"><div>${ICONS.tasks}<div class="itemTitle">Tasks</div></div><strong class="green">${tasks.length}</strong></div><div class="item"><div>${ICONS.exam}<div class="itemTitle">Exams</div></div><strong style="color:var(--blue)">${exams.length}</strong></div></div></div>
+ </div></div>`;
+}
+function selectDate(s){state.selectedDate=s;renderCalendar()}
+function calMove(delta){let d=new Date((state.selectedDate||today())+'T12:00:00');d.setMonth(d.getMonth()+delta);state.selectedDate=iso(new Date(d.getFullYear(),d.getMonth(),1));renderCalendar()}
+function renderStats(){document.getElementById('page-stats').innerHTML=pageHeader('Statistics','stats')+`<div class="statsGrid"><div class="card"><div class="cardHead"><h3>Total Study Time</h3>${ICONS.timer}</div><div class="kpi">${clock(state.study.total)}</div><div class="sub">Started from ${state.study.startDate?fmtDate(state.study.startDate):'Not started'}</div></div><div class="card"><div class="cardHead"><h3>Today's Study Time</h3>${ICONS.timer}</div><div class="kpi">${clock(state.study.days[today()]||0)}</div></div><div class="card wide"><div class="cardHead"><h3>Weekly Study Time</h3>${ICONS.stats}</div>${barChart()}</div><div class="card wide"><div class="cardHead"><h3>Monthly Study Time</h3>${ICONS.calendar}</div>${monthChart()}</div></div>`}
+function renderSettings(){document.getElementById('page-settings').innerHTML=pageHeader('Settings','settings')+`<div class="card settings"><div class="setting"><div><b>Theme</b><div class="sub">Dark theme is enabled</div></div><span class="green">●</span></div><div class="setting"><div><b>Clear application data</b><div class="sub">Remove tasks, exams and study history</div></div><button class="btn danger" onclick="clearAll()">Clear Data</button></div></div>`}
+function clearAll(){if(confirm('Clear all application data?')){localStorage.removeItem(KEY);location.reload()}}
+function openModal(x){document.getElementById('modalBox').innerHTML=x;document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()})
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+buildNav();shell();go('home');
+setInterval(()=>{ // remove passed exams automatically
+ const before=state.exams.length;state.exams=state.exams.filter(e=>e.date>=today());if(state.exams.length!==before){save();let active=document.querySelector('.page.active')?.id?.replace('page-','');if(active)renderPage(active)}
+},60000);
+</script>
+</body>
+</html>
